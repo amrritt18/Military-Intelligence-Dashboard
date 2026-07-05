@@ -1,53 +1,51 @@
 import streamlit as st
 
+
+# Page Configuration
+
 st.set_page_config(
-
     page_title="AI Military Intelligence Dashboard",
-
-    page_icon="🛡",
-
-    layout="wide"
-
+    page_icon="🛡️",
+    layout="wide",
 )
 
-st.title("🛡 AI-Based Military Intelligence Dashboard")
 
-st.markdown("""
+# Main Title
 
-### Welcome
 
-This dashboard provides military intelligence analysis using the
+st.title("🛡️ AI-Based Military Intelligence Dashboard")
 
-Global Terrorism Database (GTD).
 
- Select a page from the sidebar.
+st.markdown(
+    """
+Welcome to the **AI-Based Military Intelligence Dashboard**.
 
-""")
+This application provides interactive visualizations, predictive analytics,
+and AI-powered intelligence using the **Global Terrorism Database (GTD)**.
 
-st.info("""
+Use the navigation menu on the left to explore different modules.
+"""
+)
 
-Available Modules
 
--  Home
+# Dashboard Modules
 
--  Global Threat Map
 
--  Country Analysis
+st.subheader("📂 Available Modules")
 
--  Attack Prediction
+st.markdown(
+    """
+- 🏠 Home
+- 🌍 Global Threat Map
+- 🌎 Country Analysis
+- 🤖 Attack Prediction
+- ⚠️ Threat Level Prediction
+- 📈 Forecasting
+- 📝 AI Intelligence Report
+- 🔍 Data Explorer
+- ⚙️ Settings
+"""
+)
 
--  Threat Level Prediction
 
--  Forecasting
-
--  AI Intelligence Report
-
--  Data Explorer
-
-- ⚙ Settings
-
- Use the left sidebar to navigate.
-
-""")
-
-st.info("Select a page from the sidebar to begin.")
+st.success("👈 Select a page from the left sidebar to get started.")

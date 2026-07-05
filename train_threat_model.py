@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import os
 import joblib
 
@@ -9,6 +8,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
+
 
 # ---------------------------------------------------
 # Create models folder
@@ -31,34 +31,74 @@ df = pd.read_csv(
 print(df.shape)
 
 # ---------------------------------------------------
-# Select Features
+# Features
 # ---------------------------------------------------
 
 features = [
 
     "country_txt",
     "region_txt",
+    "attacktype1_txt",
     "weaptype1_txt",
     "targtype1_txt",
-    "gname",
-    "success",
-    "suicide",
-    "nkill",
-    "nwound"
+    "gname"
 
 ]
 
-target = "attacktype1_txt"
+target = "threat_level"
 
-df = df[features + [target]]
+required_columns = features + ["nkill", "nwound"]
+
+df = df[required_columns]
 
 # ---------------------------------------------------
 # Remove Missing Values
 # ---------------------------------------------------
 
-df = df.dropna()
+df = df.dropna().copy()
 
 print("After Cleaning:", df.shape)
+
+# ---------------------------------------------------
+# Create Threat Level
+# ---------------------------------------------------
+
+df["impact"] = df["nkill"] + df["nwound"]
+
+
+def classify_threat(impact):
+
+    if impact <= 2:
+        return "LOW"
+
+    elif impact <= 10:
+        return "MEDIUM"
+
+    else:
+        return "HIGH"
+
+
+df[target] = df["impact"].apply(classify_threat)
+
+# ---------------------------------------------------
+# Threat Level Distribution
+# ---------------------------------------------------
+
+print()
+
+print("=" * 50)
+
+print("Threat Level Distribution")
+
+print("=" * 50)
+
+print(df[target].value_counts())
+
+# ---------------------------------------------------
+# Remove Leakage Columns
+# ---------------------------------------------------
+
+df = df.drop(columns=["nkill", "nwound", "impact"])
 
 # ---------------------------------------------------
 # Encode Features
@@ -66,15 +106,7 @@ print("After Cleaning:", df.shape)
 
 encoders = {}
 
-for col in [
-
-    "country_txt",
-    "region_txt",
-    "weaptype1_txt",
-    "targtype1_txt",
-    "gname"
-
-]:
+for col in features:
 
     encoder = LabelEncoder()
 
@@ -111,120 +143,3 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 
 )
-
-# ---------------------------------------------------
-# Train Random Forest
-# ---------------------------------------------------
-
-print("Training Model...")
-
-model = RandomForestClassifier(
-
-    n_estimators=300,
-    random_state=42,
-    n_jobs=-1
-
-)
-
-model.fit(
-
-    X_train,
-    y_train
-
-)
-
-# ---------------------------------------------------
-# Prediction
-# ---------------------------------------------------
-
-pred = model.predict(X_test)
-
-# ---------------------------------------------------
-# Accuracy
-# ---------------------------------------------------
-
-accuracy = accuracy_score(
-
-    y_test,
-    pred
-
-)
-
-print()
-
-print("=" * 50)
-
-print("Accuracy")
-
-print("=" * 50)
-
-print(accuracy)
-
-print()
-
-print("=" * 50)
-
-print("Classification Report")
-
-print("=" * 50)
-
-print(
-
-    classification_report(
-
-        y_test,
-        pred
-
-    )
-
-)
-
-print("=" * 50)
-
-print("Confusion Matrix")
-
-print("=" * 50)
-
-print(
-
-    confusion_matrix(
-
-        y_test,
-        pred
-
-    )
-
-)
-
-# ---------------------------------------------------
-# Save Model
-# ---------------------------------------------------
-
-joblib.dump(
-
-    model,
-    "models/attack_prediction_model.pkl"
-
-)
-
-joblib.dump(
-
-    target_encoder,
-    "models/target_encoder.pkl"
-
-)
-
-joblib.dump(
-
-    encoders,
-    "models/feature_encoders.pkl"
-
-)
-
-print()
-
-print("=" * 50)
-
-print("Model Saved Successfully")
-
-print("=" * 50)

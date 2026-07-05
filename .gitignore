@@ -1,26 +1,65 @@
+# ==========================================
 # Virtual Environment
-venv/
+# ==========================================
 
-# Data folder
+venv/
+.venv/
+
+# ==========================================
+# Dataset
+# ==========================================
+
 data/
 
-# Python cache
+# ==========================================
+# Trained Models
+# ==========================================
+
+models/attack_prediction_model.pkl
+models/threat_level_model.pkl
+
+# (Keep these small files if you want the app to work after cloning)
+# models/feature_encoders.pkl
+# models/target_encoder.pkl
+# models/threat_feature_encoders.pkl
+# models/threat_target_encoder.pkl
+
+# ==========================================
+# Python Cache
+# ==========================================
+
 __pycache__/
 *.py[cod]
+*.pyo
 
+# ==========================================
 # Jupyter
+# ==========================================
+
 .ipynb_checkpoints/
 
+# ==========================================
 # VS Code
+# ==========================================
+
 .vscode/
 
-# Environment variables
+# ==========================================
+# Environment Variables
+# ==========================================
+
 .env
 
+# ==========================================
 # Logs
+# ==========================================
+
 logs/
 *.log
 
-# OS files
+# ==========================================
+# OS Files
+# ==========================================
+
 .DS_Store
 Thumbs.db
