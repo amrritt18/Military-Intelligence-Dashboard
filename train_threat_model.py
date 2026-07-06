@@ -143,3 +143,130 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 
 )
+
+# ---------------------------------------------------
+# Train Random Forest
+# ---------------------------------------------------
+
+print()
+
+print("=" * 50)
+
+print("Training Threat Level Model...")
+
+print("=" * 50)
+
+model = RandomForestClassifier(
+
+    n_estimators=300,
+    random_state=42,
+    n_jobs=-1
+
+)
+
+model.fit(
+
+    X_train,
+    y_train
+
+)
+
+# ---------------------------------------------------
+# Prediction
+# ---------------------------------------------------
+
+pred = model.predict(
+
+    X_test
+
+)
+
+# ---------------------------------------------------
+# Accuracy
+# ---------------------------------------------------
+
+accuracy = accuracy_score(
+
+    y_test,
+    pred
+
+)
+
+print()
+
+print("=" * 50)
+
+print("Accuracy")
+
+print("=" * 50)
+
+print(accuracy)
+
+print()
+
+print("=" * 50)
+
+print("Classification Report")
+
+print("=" * 50)
+
+print(
+
+    classification_report(
+
+        y_test,
+        pred
+
+    )
+
+)
+
+print("=" * 50)
+
+print("Confusion Matrix")
+
+print("=" * 50)
+
+print(
+
+    confusion_matrix(
+
+        y_test,
+        pred
+
+    )
+
+)
+
+# ---------------------------------------------------
+# Save Model
+# ---------------------------------------------------
+
+joblib.dump(
+
+    model,
+    "models/threat_level_model.pkl"
+
+)
+
+joblib.dump(
+
+    encoders,
+    "models/threat_feature_encoders.pkl"
+
+)
+
+joblib.dump(
+
+    target_encoder,
+    "models/threat_target_encoder.pkl"
+
+)
+
+print()
+
+print("=" * 50)
+
+print("Threat Level Model Saved Successfully")
+
+print("=" * 50)

@@ -1,7 +1,7 @@
 import streamlit as st
 
-from utils.loaders import load_dataset, load_attack_prediction_model
-from utils.preprocessing import clean_prediction_data, encode_features, prepare_input
+from utils.loaders import load_attack_prediction_model
+from utils.preprocessing import  encode_features, prepare_input
 
 
 # ==========================================
@@ -15,20 +15,8 @@ st.set_page_config(
 )
 
 
-# ==========================================
-# Load Dataset and Model
-# ==========================================
-
-df = load_dataset()
 
 model, feature_encoders, target_encoder = load_attack_prediction_model()
-
-
-# ==========================================
-# Data Preprocessing
-# ==========================================
-
-df = clean_prediction_data(df)
 
 
 # ==========================================
@@ -55,30 +43,30 @@ with st.form("prediction_form"):
 
         country = st.selectbox(
             "🌍 Country",
-            sorted(df["country_txt"].unique())
-        )
+            sorted(feature_encoders["country_txt"].classes_)
+)
 
         region = st.selectbox(
             "🌎 Region",
-            sorted(df["region_txt"].unique())
+            sorted(feature_encoders["region_txt"].classes_)
         )
 
         weapon = st.selectbox(
             "🔫 Weapon Type",
-            sorted(df["weaptype1_txt"].unique())
+            sorted(feature_encoders["weaptype1_txt"].classes_)
         )
 
         target = st.selectbox(
             "🎯 Target Type",
-            sorted(df["targtype1_txt"].unique())
+            sorted(feature_encoders["targtype1_txt"].classes_)
         )
 
     with col2:
 
         group = st.selectbox(
             "👥 Terrorist Group",
-            sorted(df["gname"].unique())
-        )
+            sorted(feature_encoders["gname"].classes_)
+)
 
         success = st.selectbox(
             "✅ Attack Successful?",
@@ -113,6 +101,12 @@ with st.form("prediction_form"):
 # ==========================================
 
 if submitted:
+
+    country_name = country
+    region_name = region
+    weapon_name = weapon
+    target_name = target
+    group_name = group
 
     country, region, weapon, target, group = encode_features(
         feature_encoders,
@@ -158,12 +152,11 @@ if submitted:
 
     display_df = input_df.copy()
 
-    display_df["country_txt"] = country
-    display_df["region_txt"] = region
-    display_df["weaptype1_txt"] = weapon
-    display_df["targtype1_txt"] = target
-    display_df["gname"] = group
-
+    display_df["country_txt"] = country_name
+    display_df["region_txt"] = region_name
+    display_df["weaptype1_txt"] = weapon_name
+    display_df["targtype1_txt"] = target_name
+    display_df["gname"] = group_name
     st.dataframe(
         display_df,
         use_container_width=True

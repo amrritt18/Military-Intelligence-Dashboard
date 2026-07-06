@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import os
 import joblib
 
@@ -9,6 +8,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
+
 
 # ---------------------------------------------------
 # Create models folder
@@ -56,7 +56,20 @@ df = df[features + [target]]
 # Remove Missing Values
 # ---------------------------------------------------
 
-df = df.dropna()
+df = df.dropna(
+    subset=[
+        "country_txt",
+        "region_txt",
+        "weaptype1_txt",
+        "targtype1_txt",
+        "gname",
+        "attacktype1_txt",
+        "success",
+        "suicide",
+        "nkill",
+        "nwound"
+    ]
+).copy()
 
 print("After Cleaning:", df.shape)
 
@@ -66,7 +79,7 @@ print("After Cleaning:", df.shape)
 
 encoders = {}
 
-for col in [
+categorical_features = [
 
     "country_txt",
     "region_txt",
@@ -74,7 +87,9 @@ for col in [
     "targtype1_txt",
     "gname"
 
-]:
+]
+
+for col in categorical_features:
 
     encoder = LabelEncoder()
 
@@ -137,7 +152,11 @@ model.fit(
 # Prediction
 # ---------------------------------------------------
 
-pred = model.predict(X_test)
+pred = model.predict(
+
+    X_test
+
+)
 
 # ---------------------------------------------------
 # Accuracy
@@ -209,15 +228,15 @@ joblib.dump(
 
 joblib.dump(
 
-    target_encoder,
-    "models/target_encoder.pkl"
+    encoders,
+    "models/feature_encoders.pkl"
 
 )
 
 joblib.dump(
 
-    encoders,
-    "models/feature_encoders.pkl"
+    target_encoder,
+    "models/target_encoder.pkl"
 
 )
 

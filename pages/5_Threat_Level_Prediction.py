@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
 
-from utils.loaders import load_dataset, load_threat_prediction_model
-from utils.preprocessing import clean_prediction_data, encode_threat_features
+from utils.loaders import load_threat_prediction_model
+from utils.preprocessing import encode_threat_features
 from utils.prediction import predict_attack, prediction_probability, decode_prediction
 from utils.helpers import calculate_confidence
 
@@ -19,28 +19,10 @@ st.set_page_config(
 
 
 # ==========================================
-# Load Dataset & Model
+# Load Model
 # ==========================================
-
-df = load_dataset()
 
 model, encoders, target_encoder = load_threat_prediction_model()
-
-
-# ==========================================
-# Data Preprocessing
-# ==========================================
-
-required_columns = [
-    "country_txt",
-    "region_txt",
-    "attacktype1_txt",
-    "weaptype1_txt",
-    "targtype1_txt",
-    "gname"
-]
-
-df = df.dropna(subset=required_columns).copy()
 
 
 # ==========================================
@@ -68,34 +50,35 @@ with st.form("threat_prediction_form"):
 
         country = st.selectbox(
             "🌍 Country",
-            sorted(df["country_txt"].unique())
-        )
+            sorted(encoders["country_txt"].classes_)
+)
 
         region = st.selectbox(
             "🌎 Region",
-            sorted(df["region_txt"].unique())
+            sorted(encoders["region_txt"].classes_)
         )
 
         attack = st.selectbox(
             "💥 Attack Type",
-            sorted(df["attacktype1_txt"].unique())
+            sorted(encoders["attacktype1_txt"].classes_)
         )
+
 
     with col2:
 
         weapon = st.selectbox(
             "🔫 Weapon Type",
-            sorted(df["weaptype1_txt"].unique())
+            sorted(encoders["weaptype1_txt"].classes_)
         )
 
         target = st.selectbox(
             "🎯 Target Type",
-            sorted(df["targtype1_txt"].unique())
+            sorted(encoders["targtype1_txt"].classes_)
         )
 
         group = st.selectbox(
             "👥 Terrorist Group",
-            sorted(df["gname"].unique())
+            sorted(encoders["gname"].classes_)
         )
 
     submitted = st.form_submit_button("🚨 Predict Threat Level")
